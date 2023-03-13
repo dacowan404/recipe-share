@@ -1,0 +1,22 @@
+extends layout 
+
+block content 
+  form(method='POST' action='')
+    div
+      label(for='username') Username: 
+      input(type='text' name='username' required='true' value=(undefined===user ? '' : user.username))
+    div
+      label(for='password') Password : 
+      input(type='text' name='password' required='true' value=(undefined===user ? '' : user.password))
+    div
+      label(for='confirm') Password : 
+      input(type='text' name='confirm' required='true')       
+    div
+      label(for='email') Email: 
+      input(type='email' name='email' required='true' value=(undefined===user ? '' : user.email))
+    button(type='submit') Create Account
+
+  if errors 
+    ul 
+      for error in errors 
+        li!= error.msg   

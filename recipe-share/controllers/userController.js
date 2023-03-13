@@ -7,12 +7,21 @@ exports.user_detail = (req, res) => {
 
 // Display User create form on GET.
 exports.user_create_get = (req, res) => {
-  res.send("NOT IMPLEMENTED: User create GET");
+  res.render("user_form");
 };
 
 // Handle User create on POST.
 exports.user_create_post = (req, res) => {
-  res.send("NOT IMPLEMENTED: User create POST");
+  const user = new User({
+    username: req.body.username,
+    password: req.body.password,
+    email: req.body.password
+  }).save(err => {
+    if (err) {
+      return next(err);
+    }
+    res.redirect('/');
+  })
 };
 
 // Display User delete form on GET.

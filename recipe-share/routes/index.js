@@ -7,7 +7,7 @@ const user_controller = require('../controllers/userController');
 /* GET home page. */
 
 router.get('/', (req, res, next) => {
-  res.render("index", { title: "Express" });
+  res.render("index", { title: "Express", user: req.user });
 });
 
 router.get('/explore', recipe_controller.recipe_list);
@@ -28,7 +28,7 @@ router.get('/:id/:id2/update', recipe_controller.recipe_update_get)
 router.post('/:id/:id2/update', recipe_controller.recipe_update_post)
 
 // view a recipe
-router.get('/:id', recipe_controller.recipe_detail);
+router.get('recipe/:id', recipe_controller.recipe_detail);
 
 // user routes
 
