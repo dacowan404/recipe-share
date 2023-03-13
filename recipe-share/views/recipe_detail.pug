@@ -1,0 +1,19 @@
+extends layout 
+
+block content 
+  div #{recipe.name} 
+  div #{recipe.description} 
+
+  div Ingredients:
+  ul
+    each ingredient in recipe.ingredients 
+      li 
+        div #{ingredient}
+  
+  div Steps:
+  ol 
+    each step in recipe.steps 
+      li 
+        div #{step}
+
+  div #{recipe.notes}

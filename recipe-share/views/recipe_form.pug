@@ -1,0 +1,25 @@
+extends layout 
+
+block content 
+  form(method='POST' action='')
+    div
+      label(for='name') Recipe Name: 
+      input(type='text' name='name' required='true' value=(undefined===recipe ? '' : recipe.name))
+    div
+      label(for='description') Description: 
+      input(type='text' name='description' maxLength=160 value=(undefined===recipe ? '' : recipe.description))       
+    div
+      label(for='ingredients') Ingredients: 
+      input(type='text' name='ingredients' required='true' value=(undefined===recipe ? '' : recipe.ingredients))
+    div
+      label(for='steps') Steps: 
+      input(type='text' name='steps' required='true' value=(undefined===recipe ? '' : recipe.steps)) 
+    div
+      label(for='notes') Notes: 
+      input(type='text' name='notes' value=(undefined===recipe ? '' : recipe.notes))
+    button(type='submit') Submit Recipe 
+
+  if errors 
+    ul 
+      for error in errors 
+        li!= error.msg   

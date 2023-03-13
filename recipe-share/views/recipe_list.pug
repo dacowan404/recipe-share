@@ -1,0 +1,11 @@
+extends layout 
+
+block content
+  title= title 
+
+  ul 
+    each recipe in recipe_list 
+      li 
+        a(href=recipe.url) #{recipe.name}, #{recipe.description}, #{recipe.likes}
+  
+
