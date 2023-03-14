@@ -1,9 +1,6 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
-
   if user 
     h1 Welcome Back #{user.username} 
     a(href='logout') Log Out 
@@ -17,6 +14,16 @@ block content
           label(for='password') Password : 
           input(type='text' name='password' required='true' value=(undefined===user ? '' : user.password))  
         button(type='submit') Login
+
+    h3 quick log in 
+      form(method='POST' action='/login')
+        div
+          label(for='username') Username: 
+          input(type='text' value='test1' name='username' required='true')
+        div
+          label(for='password') Password : 
+          input(type='text' value='test' name='password' required='true')  
+        button(type='submit') Quick Login
 
     if errors 
       ul 

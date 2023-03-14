@@ -2,6 +2,10 @@ extends layout
 
 block content
   title= title 
+  if user 
+    div Hi #{user.username}
+  else 
+    div Howdy Stranger
 
   ul 
     each recipe in recipe_list 

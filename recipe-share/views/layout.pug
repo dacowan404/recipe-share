@@ -16,17 +16,21 @@ html
             li
               a(href='/') Home
             li
-              a(href='/:id/likedRecipes') Liked Recipes
-            li
-              a(href='/:id/createdRecipes') My Recipes
-            li
               a(href='/explore') Explore New Recipes
-            li
-              a(href='/create') Create New Recipe
-            li
-              a(href='/login') Login
-            li
-              a(href='/user/new-user') Create Account
+            if user 
+              li
+                a(href='/create') Create New Recipe
+              li
+                a(href='/likedRecipes') Liked Recipes
+              li
+                a(href='/myRecipes') My Recipes
+              li
+                a(href='logout') Logout 
+            else
+              li
+                a(href='/login') Login
+              li
+                a(href='/user/new-user') Create Account
 
 
       div(class='row-sm-10')

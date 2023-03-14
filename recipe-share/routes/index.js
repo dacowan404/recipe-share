@@ -13,7 +13,9 @@ router.get('/', (req, res, next) => {
 router.get('/explore', recipe_controller.recipe_list);
 
 // recipe routes
-router.get('/:id/myrecipes', recipe_controller.my_recipe_list);
+router.get('/myrecipes', recipe_controller.my_recipe_list);
+
+// liked recipes 
 
 // create new recipe
 router.get('/create', recipe_controller.recipe_create_get);
@@ -28,7 +30,7 @@ router.get('/:id/:id2/update', recipe_controller.recipe_update_get)
 router.post('/:id/:id2/update', recipe_controller.recipe_update_post)
 
 // view a recipe
-router.get('recipe/:id', recipe_controller.recipe_detail);
+router.get('/recipe/:id', recipe_controller.recipe_detail);
 
 // user routes
 

@@ -19,7 +19,7 @@ RecipeSchema.virtual("Date_formated").get(function () {
 })
 
 RecipeSchema.virtual("url").get(function () {
-  return `/${this._id}`;
+  return `/recipe/${this._id}`;
 })
 // add photos, comments, date, and links
 

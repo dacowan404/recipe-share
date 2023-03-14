@@ -13,12 +13,15 @@ exports.recipe_list = (req, res, next) => {
     if (err) {
       return next(err);
     }
-    res.render("recipe_list", {title: "Most Popular Recipes", recipe_list: list_recipes});
+    res.render("recipe_list", {title: "Most Popular Recipes", recipe_list: list_recipes, user:req.user});
   });
 }
 
 exports.my_recipe_list = (req, res, next) => {
-  Recipe.find({creator: req.params.id})
+  if (req.user === undefined) {
+    res.redirect("/login");
+  } 
+  Recipe.find({creator: req.user.id})
   .exec((err, recipes) => {
     if (err) {
       return next(err);
@@ -29,7 +32,8 @@ exports.my_recipe_list = (req, res, next) => {
       return next(err);
     }
     res.render("recipe_list", {
-      recipes
+      recipe_list: recipes,
+      user: req.user
     })
   })
 }
@@ -54,7 +58,11 @@ exports.recipe_detail = (req, res, next) => {
 };
 
 exports.recipe_create_get = (req, res, next) => {
-  res.render("recipe_form");
+  if (req.user === undefined) {
+    res.redirect("/login");
+  } else {
+    res.render("recipe_form");
+  }
 };
 
 // Handle recipe create on POST.
