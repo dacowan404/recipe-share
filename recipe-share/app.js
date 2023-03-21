@@ -7,6 +7,8 @@ const session = require("express-session");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 
+require('dotenv').config();
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
@@ -17,10 +19,10 @@ const { mainModule } = require('process');
 const User = require('./models/user');
 const { doesNotMatch } = require('assert');
 mongoose.set('strictQuery', false);
-const mongoDB = "mongodb+srv://user:userPassword@cluster0.hjm9ior.mongodb.net/recipe-share?retryWrites=true&w=majority";
+const mongoDB_URI = process.env.MONGO_URI;
 main().catch(err =>  console.log(err));
 async function main() {
-  await mongoose.connect(mongoDB);
+  await mongoose.connect(mongoDB_URI);
 }
 
 // view engine setup

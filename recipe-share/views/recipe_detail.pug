@@ -2,6 +2,7 @@ extends layout
 
 block content 
   div #{recipe.name} 
+  div Made by #{recipe.creator}
   div #{recipe.description} 
 
   div Ingredients:
@@ -17,3 +18,8 @@ block content
         div #{step}
 
   div #{recipe.notes}
+
+  - let isCreator = (JSON.stringify(user._id) === JSON.stringify(recipe.creator))
+  if isCreator
+    a(href=recipe.url + '/delete') Delete Recipe
+    a(href=recipe.url + '/update') Update Recipe

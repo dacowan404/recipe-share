@@ -2,6 +2,9 @@ const recipe = require("../models/recipe");
 const Recipe = require("../models/recipe");
 const user = require("../models/user");
 const User = require("../models/user");
+const { param } = require("../routes");
+
+const { body, validationResult } = require("express-validator");
 
 // need an index/home page showing top recipes. idk where to put it
 
@@ -53,6 +56,7 @@ exports.recipe_detail = (req, res, next) => {
       // Successful, so render.
       res.render("recipe_detail", {
         recipe,
+        user: req.user,
       });
     });
 };
@@ -61,23 +65,89 @@ exports.recipe_create_get = (req, res, next) => {
   if (req.user === undefined) {
     res.redirect("/login");
   } else {
-    res.render("recipe_form");
+    res.render("recipe_form", {user: req.user});
   }
 };
 
 // Handle recipe create on POST.
-exports.recipe_create_post = (req, res) => {
-  res.send(`NI: recipe create post, user: ${req.params}`);
-}
+exports.recipe_create_post = [
+  // Validate and sanitize fields.
+  body("name", "Name must not be empty")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("description")
+    .trim()
+    .escape(),
+  body("ingredients", "Ingredients must not be empty")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("steps", "Steps must not be empty")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("notes").trim().escape(),
+  (req, res, next) => {
+    const errors = validationResult(req);
 
+    const recipe = new Recipe({
+      name: req.body.name,
+      ingredients: req.body.ingredients,
+      steps: req.body.steps,
+      description: req.body.description,
+      notes: req.body.notes,
+      creator: req.user.id
+    });
+
+    recipe.save((err) => {
+      if (err) {
+        return next(err);
+      }
+      res.redirect(recipe.url);
+    })
+  }
+]
 // Display Recipe delete form on GET.
-exports.recipe_delete_get = (req, res) => {
-  res.send("NOT IMPLEMENTED: Recipe delete GET");
+exports.recipe_delete_get = (req, res, next) => {
+  async function recipe(callback) {
+    await Recipe.findById(req.params.id).exec(callback); 
+  }
+  recipe(
+    (err, results) => {
+      if (err) {
+        return next(err);
+      }
+      if (results == null) {
+        res.redirect('/') // recipe not found
+      }
+      res.render("recipe_delete", {
+        recipe: results,
+        user: req.user
+      });
+  });
 };
 
 // Handle Recipe delete on POST.
-exports.recipe_delete_post = (req, res) => {
-  res.send("NOT IMPLEMENTED: Recipe delete POST");
+exports.recipe_delete_post = (req, res, next) => {
+  async function recipe(callback) {
+    await Recipe.findById(req.params.id).exec(callback); 
+  }
+  recipe(
+    (err, results) => {
+      if (err) {
+        return next(err);
+      }
+      if (results == null) {
+        res.redirect("/myRecipes");
+      }
+      Recipe.findByIdAndRemove(req.params.id, (err) => {
+        if (err) {
+          return next(err);
+        }
+        res.redirect("/myRecipes");
+      })
+  });
 };
 
 // Display Recipe update form on GET.

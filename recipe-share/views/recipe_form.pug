@@ -11,6 +11,8 @@ block content
     div
       label(for='ingredients') Ingredients: 
       input(type='text' name='ingredients' required='true' value=(undefined===recipe ? '' : recipe.ingredients))
+      if ingredients
+        div cool
     div
       label(for='steps') Steps: 
       input(type='text' name='steps' required='true' value=(undefined===recipe ? '' : recipe.steps)) 
