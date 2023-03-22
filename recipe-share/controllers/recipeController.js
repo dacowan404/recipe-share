@@ -81,7 +81,7 @@ exports.recipe_create_post = [
     .escape(),
   body("ingredients", "Ingredients must not be empty")
     .trim()
-    .isLength({ min: 1 })
+    //.isLength({ min: 1 })
     .escape(),
   body("steps", "Steps must not be empty")
     .trim()
@@ -91,6 +91,7 @@ exports.recipe_create_post = [
   (req, res, next) => {
     const errors = validationResult(req);
 
+    console.log(req.body.ingredients);
     const recipe = new Recipe({
       name: req.body.name,
       ingredients: req.body.ingredients,

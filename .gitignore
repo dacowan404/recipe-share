@@ -2,3 +2,4 @@ recipe-share/node_modules/
 recipe-share/insertData.js
 node_modules/
 .env
+reactForm.js
