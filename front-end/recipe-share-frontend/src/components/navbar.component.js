@@ -9,14 +9,20 @@ export default class Navbar extends Component {
         <Link to="/">Recipe Share</Link>
         <div>
           <ul>
+          <li>
+              <Link to='/'>Home</Link>
+            </li>
             <li>
-              <Link to='/'>Recipes</Link>
+              <Link to='/explore'>Explore</Link>
             </li>
             <li>
               <Link to='/create'>Create</Link>
             </li>
             <li>
               <Link to='/user'>Create User</Link>
+            </li>
+            <li>
+              <Link to='/login'>Login</Link>
             </li>
           </ul>
         </div>

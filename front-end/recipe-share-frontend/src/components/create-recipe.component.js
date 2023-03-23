@@ -6,6 +6,7 @@ export default class CreateRecipe extends Component {
 
     this.OnChangeName = this.OnChangeName.bind(this);
     this.OnChangeDescription = this.OnChangeDescription.bind(this);
+    this.OnChangeNotes = this.OnChangeNotes.bind(this);
     this.OnChangeCreator = this.OnChangeCreator.bind(this);
     this.handleIngredientChange = this.handleIngredientChange.bind(this);
     this.handleAddIngredient = this.handleAddIngredient.bind(this);
@@ -52,6 +53,12 @@ export default class CreateRecipe extends Component {
       });
     }
 
+    OnChangeNotes(e) {
+      this.setState({
+        notes: e.target.value
+      });
+    }
+
     handleIngredientChange(index, value) {
       const newIngredients = this.state.ingredients; // create a copy of the existing ingredients array
       newIngredients[index] = value; // update the value at the specified index
@@ -95,8 +102,6 @@ export default class CreateRecipe extends Component {
         steps: newSteps
       }); // set the state with the updated array
     };
-  
-    
 
     onSubmit(e) {
       e.preventDefault();
@@ -158,8 +163,13 @@ export default class CreateRecipe extends Component {
           <button type="button" onClick={this.handleAddStep}>Add Step</button>
 
           <div>
-            <label>Description: </label>
-            <input type="text" value={this.state.description} onChange={this.OnChangeDescription} />
+            <label>Description (200 characters or less): </label>
+            <input type="text" maxLength="200" value={this.state.description} onChange={this.OnChangeDescription} />
+          </div>
+
+          <div>
+            <label>Notes: </label>
+            <input type="text" value={this.state.notes} onChange={this.OnChangeNotes} />
           </div>
           <div>
             <input type="submit" value="Create New Recipe" />
