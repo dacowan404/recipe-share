@@ -15,7 +15,7 @@ exports.user_create_post = (req, res) => {
   const user = new User({
     username: req.body.username,
     password: req.body.password,
-    email: req.body.password
+    email: req.body.email
   }).save(err => {
     if (err) {
       return next(err);

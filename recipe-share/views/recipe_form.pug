@@ -10,9 +10,7 @@ block content
       input(type='text' name='description' maxLength=160 value=(undefined===recipe ? '' : recipe.description))       
     div
       label(for='ingredients') Ingredients: 
-      input(type='text' name='ingredients[0]' required='true' value=(undefined===recipe ? '' : recipe.ingredients))
-      input(type='text' name='ingredients[1]' required='false')
-      input(type='text' name='ingredients[2]' required='false')
+      input(type='text' name='ingredients' required='true' value=(undefined===recipe ? '' : recipe.ingredients))
       if ingredients
         div cool
     div

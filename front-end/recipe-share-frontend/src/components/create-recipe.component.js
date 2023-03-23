@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 
 export default class CreateRecipe extends Component {
   constructor(props) {
@@ -30,9 +31,19 @@ export default class CreateRecipe extends Component {
 
     componentDidMount() {
       this.setState({
-        creators: ['test user'],
-        creatorName: 'test user'
+        creators: ['test 1'],
+        creatorName: 'test 1'
       })
+      /*
+      axios.get('http://localhost:5000/users/')
+        .then(response => {
+          console.log(response);
+          if (response.data.length > 0) {
+            this.setState({
+              creators: response.data.map(user => user.username),
+              creatorName: response.data[0].username
+            })
+          } */
     }
 
     OnChangeName(e) {
@@ -112,9 +123,12 @@ export default class CreateRecipe extends Component {
         steps: this.state.steps,
         description: this.state.description,
         notes: this.state.notes,
-        creator: this.state.creatorName,
+        creator: '640f436275030bb85107eae6',
         editedDate: new Date()
       }
+
+      axios.post('http://localhost:5000/createRecipe', recipe)
+      .then(res => console.log(res.data)); // 1hour 25min
 
       console.log(recipe);
       //window.location = '/';

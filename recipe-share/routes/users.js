@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 const user_controller = require('../controllers/userController');
+const User = require("../models/user");
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -15,8 +16,18 @@ router.get('/', function(req, res, next) {
 //router.post('/login' user_controller)
 
 // create new user
-router.get('/new-user', user_controller.user_create_get)
-router.post('/new-user', user_controller.user_create_post)
+//router.get('/new-user', user_controller.user_create_get)
+//router.post('/new-user', user_controller.user_create_post)
+router.route('/new-user').post((req, res) => {
+  const newUser = new User({
+    username: req.body.username,
+    password: req.body.password,
+    email: req.body.email
+  });
+
+  newUser.save().then(() => res.json('User added!'))
+    .catch(err => res.status(400).json('Error routes/users.js ' + err));
+})
 
 // delete account - not going to implement at this time
 
