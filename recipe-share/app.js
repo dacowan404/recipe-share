@@ -16,7 +16,7 @@ var usersRouter = require('./routes/users');
 var app = express();
 
 const mongoose = require('mongoose');
-const { mainModule } = require('process');
+const { mainModule, emitWarning } = require('process');
 const User = require('./models/user');
 const { doesNotMatch } = require('assert');
 mongoose.set('strictQuery', false);
@@ -30,7 +30,7 @@ async function main() {
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-app.use(session({ secret: "cats", resave: false, saveUninitialized: true }));
+app.use(session({ secret: "cats", resave: false, saveUninitialized: true, cookie: {maxAge:60*60*100} }));
 passport.use(
   new LocalStrategy((username, password, done) => {
     User.findOne({ username: username }, (err, user) => {
@@ -47,6 +47,7 @@ passport.use(
     });
   })
 );
+
 passport.serializeUser(function(user, done) {
   done(null, user.id);
 });
@@ -60,7 +61,18 @@ app.use(passport.session());
 app.use(express.urlencoded({ extended: false }));
 
 app.use(logger('dev'));
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:3000",
+  methods: "GET,POST,PUT,DELETE",
+  credentials: true,
+  },
+  {
+    origin: "http://localhost:3000/login",
+    methods: "GET,POST,PUT,DELETE",
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -69,6 +81,65 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
+const CLIENT_URL = "http://localhost:3000/";
+
+app.get("/auth/login/success", (req,res) => {
+  if(req.user) {
+    res.status(200).json({
+      success:true,
+      message: "successful",
+      user: req.user,
+      cookies: req.cookies
+    });
+  }
+  else {
+    res.status(202).json({
+      success:false,
+      message: "info from the backend",
+      user: null
+    })
+  }
+});
+
+app.get("/auth/login/failed", (req,res) => {
+ res.status(401).json({
+     success:false,
+     message: "failure",
+ });
+});
+
+app.get("/auth/logout", (req, res, next) => {
+ req.logout(function (err) {
+  if (err) {
+    return next(err);
+  }
+  res.status(200).json({
+    logout: true
+  })
+ });
+});
+
+app.post("/auth/login", 
+  passport.authenticate("local", {failureRedirect:"/auth/login/failed"}), 
+  (req, res) => {
+    res.status(200).json({
+      user: {
+        userName: req.user.username,
+        userID : req.user._id
+      },
+      //req.user,
+      success: true,
+    }) 
+  }
+);
+
+app.get('/auth/login/callback',
+  passport.authenticate("local", {successRedirect: CLIENT_URL, failureRedirect:"auth/login/failed"
+  })
+)
+
+
+/*
 app.get('/login', (req, res, next) => {
   res.render('login')});
 app.post("/login",
@@ -82,6 +153,7 @@ app.get('/logout', (req, res, next) => {
     res.redirect('/');
   })
 })
+*/
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

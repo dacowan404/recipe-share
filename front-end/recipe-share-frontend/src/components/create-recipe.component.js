@@ -8,7 +8,6 @@ export default class CreateRecipe extends Component {
     this.OnChangeName = this.OnChangeName.bind(this);
     this.OnChangeDescription = this.OnChangeDescription.bind(this);
     this.OnChangeNotes = this.OnChangeNotes.bind(this);
-    this.OnChangeCreator = this.OnChangeCreator.bind(this);
     this.handleIngredientChange = this.handleIngredientChange.bind(this);
     this.handleAddIngredient = this.handleAddIngredient.bind(this);
     this.handleRemoveIngredient = this.handleRemoveIngredient.bind(this);
@@ -18,8 +17,7 @@ export default class CreateRecipe extends Component {
     this.onSubmit = this.onSubmit.bind(this);
 
     this.state = {
-      creatorName: '',
-      creators: [],
+      creatorID : this.props.userID,
       name: "",
       ingredients: [''],
       steps: [''],
@@ -29,32 +27,9 @@ export default class CreateRecipe extends Component {
     }
   }
 
-    componentDidMount() {
-      this.setState({
-        creators: ['test 1'],
-        creatorName: 'test 1'
-      })
-      /*
-      axios.get('http://localhost:5000/users/')
-        .then(response => {
-          console.log(response);
-          if (response.data.length > 0) {
-            this.setState({
-              creators: response.data.map(user => user.username),
-              creatorName: response.data[0].username
-            })
-          } */
-    }
-
     OnChangeName(e) {
       this.setState({
         name: e.target.value
-      });
-    }
-
-    OnChangeCreator(e) {
-      this.setState({
-        creatorName: e.target.value
       });
     }
 
@@ -139,15 +114,7 @@ export default class CreateRecipe extends Component {
       <div>
         <h3>Create New Recipe</h3>
         <form onSubmit={this.onSubmit}>
-          <div>
-            <label>User: </label>
-            <select required value={this.state.creatorName} onChange={this.OnChangeCreator}>
-            { this.state.creators.map(function(user) {
-              return <option key={user} value={user}>{user}</option>
-            })
-            }
-            </select>
-          </div>
+          <div> User: {this.props.userID}</div>
 
           <div>
             <label>Recipe Name:</label>

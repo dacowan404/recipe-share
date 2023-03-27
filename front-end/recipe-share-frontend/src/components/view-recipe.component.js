@@ -1,17 +1,9 @@
-import React, { Component, useState } from 'react';
+import React, { Component } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
 
-//function withParams(Component) {
-//  return props => <Component {...props} params={useParams()} />
-//}
-
-function useGetID() {
-  const { id } = useParams();
-  return id;
-}
 
 /*
+import { useParams } from 'react-router-dom';
 function ViewRecipe() {
   const { id } = useParams();
   const [recipe, setRecipe] = useState({
@@ -71,7 +63,18 @@ class ViewRecipe extends Component {
       notes: '',
       creator: ''
     }
-    console.log(this.props);
+
+    this.handleDelete = this.handleDelete.bind(this);
+    this.handleEdit = this.handleEdit.bind(this);
+    //console.log(this.props);
+  }
+
+  handleDelete() {
+    console.log("delete the recipe");
+  }
+
+  handleEdit() {
+    console.log("edit the recipe");
   }
 
   componentDidMount() {
@@ -93,8 +96,23 @@ class ViewRecipe extends Component {
   }
   render() {
     return (
-      <div> Look at this cool recipe:
+      <div>
         <div> {this.state.name}</div>
+        <div> Made by {this.state.creator} </div>
+        <div> {this.state.description}</div>
+        <ul> Ingredients:
+          {this.state.ingredients.map((ingredient) => (
+            <li>{ingredient}</li>
+          ))}
+        </ul>
+        <ul> Steps:
+          {this.state.steps.map((step) => (
+            <li>{step}</li>
+          ))}
+        </ul>
+        <div>{this.state.notes}</div>
+        {this.props.userID === this.state.creator ? <div><button onClick={this.handleDelete}>Delete Recipe</button><button onClick={this.handleEdit}>Edit Recipe</button></div> : <div>not user</div>}
+
       </div>
     )
   }

@@ -11,7 +11,7 @@ router.get('/', (req, res, next) => {
 });
 
 //router.get('/explore', recipe_controller.recipe_list);
-router.route('/explore').get((req, res) => {
+router.route('/explore/').get((req, res) => {
   Recipe.find({})
   .sort({likes: -1})
   .then(recipes => res.json(recipes))
@@ -19,7 +19,12 @@ router.route('/explore').get((req, res) => {
 });
 
 // recipe routes
-router.get('/myrecipes', recipe_controller.my_recipe_list);
+router.route('/myrecipes/:id').get((req, res) => {
+  Recipe.find({creator: req.params.id})
+  .sort({likes:-1})
+  .then(recipes => res.json(recipes))
+  .catch(err => res.status(400).json('Error routes/index.js ' + err))
+});
 
 // liked recipes 
 
@@ -62,7 +67,7 @@ router.route('/recipe/:id').get((req, res) => {
         err.status = 404;
         return err;
       }
-      console.log(recipe)
+      //console.log(recipe)
       res.json(recipe);
     });
 });
