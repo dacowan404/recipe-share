@@ -47,10 +47,68 @@ router.route('/createRecipe').post((req, res) => {
 })
 
 // delete recipe
-router.get('/recipe/:id/delete', recipe_controller.recipe_delete_get);
-router.post('/recipe/:id/delete', recipe_controller.recipe_delete_post);
+//router.get('/recipe/:id/delete', recipe_controller.recipe_delete_get);
+//router.post('/recipe/:id/delete', recipe_controller.recipe_delete_post);
+router.route('/recipe/:id/delete').post((req, res, next) => {
+  async function recipe(callback) {
+    await Recipe.findById(req.params.id).exec(callback);
+  }
+  recipe(
+    (err, results) => {
+      if  (err) {
+        return next(err);
+      }
+      if (results == null) {
+        res.status(204).json('No results found');
+      }
+      if (results.creator == req.body.userID) {
+        Recipe.findByIdAndRemove(req.params.id, (err) => {        
+          if (err) {          
+            return next(err);        
+          }        
+          res.status(200).json("successfully deleted");      
+        })
+      } else {
+        res.status(403).json("Unable to delete recipe, incorrect user");
+      }
+    }
+  )
+})
 
 // update recipe
+router.route('/recipe/edit/:id').post((req, res, next) => {
+  async function recipe(callback) {
+    await Recipe.findById(req.params.id).exec(callback);
+  }
+  recipe((err, results) => {
+    if (err) {
+      return next(err);
+    }
+    if (results == null) {
+      res.status(204).json('No results found');
+    }
+    if (true) { //check if user logged is user that created the recipe
+    Recipe.findByIdAndUpdate(req.params.id, {
+      name: req.body.name,
+      ingredients: req.body.ingredients,
+      steps: req.body.steps,
+      description: req.body.description,
+      notes: req.body.notes,
+      editedDate: req.body.editedDate
+    }, (err, results) => {
+      if (err) {
+        console.log(err);
+        res.status(400).json('Request failed');
+      } else {
+        res.status(200).json('recipe updated');
+      }
+    });
+    } else {
+      console.log(res.data.creator, req.body.creatorID);
+      res.status(403).json('incorrect user logged in');
+    }
+  })
+})
 router.get('/:id/:id2/update', recipe_controller.recipe_update_get)
 router.post('/:id/:id2/update', recipe_controller.recipe_update_post)
 

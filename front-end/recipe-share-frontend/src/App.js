@@ -20,9 +20,10 @@ function App() {
   //const user = {userName, userID};
   //const userID = '640f436275030bb85107eae6';
 
-  /*useEffect(() => {
+  useEffect(() => {
+    /*
     const getUser = ()=> {
-      fetch("http://localhost:5000/auth/login", {
+      fetch("http://localhost:5000/auth/login/success", {
         method: "GET",
         credentials: "include",
         headers: {
@@ -32,29 +33,47 @@ function App() {
         }
       })
         .then((response) => {
-          if (response.status === 200) return response.json();
-          throw new Error("authentication has failed!");
+          if (response.status === 200) {
+            console.log(`line 36 resObject = ${response.data}`);
+            setUserName(response.data.userName);
+            setUserID(response.data.userID);
+          } else {
+            console.log('no one logged in');
+            setUserName(null);
+            setUserID(null)
+          }
+
+          
         })
+
+        /*
         .then((resObject) => {
           console.log(`line 38 resObject = ${resObject}`);
           setUserName(resObject.user);
         })
         .catch((err) => {
           console.log(err);
-        });
+        }); 
     };
-    getUser(); 
+    getUser();  */
 
-    /*
+    
     axios.get('http://localhost:5000/auth/login/success')
       .then(response => {
+        if (response.status === 200) {
         console.log(response);
-        setUser(response.data.user);
+        setUserName(response.data.userName);
+        setUserID(response.data.userID);
+        }
+        else {
+          console.log('no one logged in');
+          setUserName(null);
+          setUserID(null);
+        }
       })
-      .then((err) => {console.log(err)}) */
 
 
-  //},[]);
+  },[]);
 
   class Login extends Component {
     constructor(props) {
@@ -115,13 +134,13 @@ function App() {
             console.log(res.data);
             setUserName(res.data.user.userName);
             setUserID(res.data.user.userID);
-            if (res.data.user.userName) {
+            if (res.data.useruserName) {
               return res.data.user.userName;
             }
           }).then(result => {
+              window.location.href = '/';
             if (result === userName) {
-              console.log(result);
-              //window.location = '/';
+              console.log('cool');
             }
           });
           

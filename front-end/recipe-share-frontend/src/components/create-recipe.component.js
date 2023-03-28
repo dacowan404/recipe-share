@@ -98,7 +98,7 @@ export default class CreateRecipe extends Component {
         steps: this.state.steps,
         description: this.state.description,
         notes: this.state.notes,
-        creator: '640f436275030bb85107eae6',
+        creator: this.state.creatorID,
         editedDate: new Date()
       }
 

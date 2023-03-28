@@ -82,20 +82,26 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 const CLIENT_URL = "http://localhost:3000/";
+let userID = null;
 
-app.get("/auth/login/success", (req,res) => {
-  if(req.user) {
-    res.status(200).json({
-      success:true,
-      message: "successful",
-      user: req.user,
-      cookies: req.cookies
-    });
+app.get("/auth/login/success", (req, res) => {
+  if(userID) {
+    User.findById(userID)
+      .then((results) => {
+        res.status(200).json({
+          success:true,
+          message: "successful",
+          userID: userID,
+          userName: results.username,
+          cookies: req.cookies
+        })
+      })
   }
   else {
     res.status(202).json({
       success:false,
       message: "info from the backend",
+      userID: null,
       user: null
     })
   }
@@ -113,6 +119,7 @@ app.get("/auth/logout", (req, res, next) => {
   if (err) {
     return next(err);
   }
+  userID = null;
   res.status(200).json({
     logout: true
   })
@@ -122,6 +129,7 @@ app.get("/auth/logout", (req, res, next) => {
 app.post("/auth/login", 
   passport.authenticate("local", {failureRedirect:"/auth/login/failed"}), 
   (req, res) => {
+    userID = req.user._id;
     res.status(200).json({
       user: {
         userName: req.user.username,

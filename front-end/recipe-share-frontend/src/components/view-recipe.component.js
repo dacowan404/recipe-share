@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
-
 /*
 import { useParams } from 'react-router-dom';
 function ViewRecipe() {
@@ -56,6 +55,7 @@ class ViewRecipe extends Component {
     super(props);
 
     this.state = {
+      id:  window.location.href.split('/')[4],
       name: '',
       ingredients: [],
       steps: [],
@@ -71,17 +71,27 @@ class ViewRecipe extends Component {
 
   handleDelete() {
     console.log("delete the recipe");
+    //const id = window.location.href.split('/')[4];
+    const ID = {userID: this.props.userID}
+    axios.post(`http://localhost:5000/recipe/${this.state.id}/delete`, ID)
+      .then(res => {
+        console.log(res);
+        if (res.status === 200) {
+          console.log("cool");
+          window.location.href = '/myRecipes';
+        }
+      })
   }
 
   handleEdit() {
-    console.log("edit the recipe");
+    window.location.href = `/edit/${this.state.id}`;
   }
 
   componentDidMount() {
-    const id = window.location.href.split('/')[4]
+    //const id = window.location.href.split('/')[4]
     //console.log(id2);
     //const id = '640f436275030bb85107eaf0';
-    axios.get(`http://localhost:5000/recipe/${id}`)
+    axios.get(`http://localhost:5000/recipe/${this.state.id}`)
       .then(response => {
         this.setState({
           name: response.data.name,

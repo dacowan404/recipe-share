@@ -123,7 +123,7 @@ exports.recipe_delete_get = (req, res, next) => {
         res.redirect('/') // recipe not found
       }
       res.render("recipe_delete", {
-        recipe: results,
+       recipe: results, 
         user: req.user
       });
   });
