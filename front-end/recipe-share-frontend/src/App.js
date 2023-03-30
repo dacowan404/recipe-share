@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import React, {Component, useEffect, useState } from 'react';
+import React, {Component, useContext, useState } from 'react';
 import axios from 'axios';
 
 import './App.css';
@@ -11,16 +11,21 @@ import ViewRecipe from "./components/view-recipe.component";
 import EditRecipe from "./components/edit-recipe.component";
 import CreateRecipe from "./components/create-recipe.component";
 import CreateUser from "./components/create-user.component";
-//import Login from "./components/login.component";
+//import { UserContext } from "./userContext";
 
+export const UserContext = React.createContext({
+  userName: null,
+  userID: null,
+  setUserName: () => {},
+  setUserID: () => {}
+})
 
 function App() {
   const [userName, setUserName] = useState(null);
+  //const [userName, setUserName] = useState(null);
   const [userID, setUserID] = useState(null);
-  //const user = {userName, userID};
-  //const userID = '640f436275030bb85107eae6';
 
-  useEffect(() => {
+  /*useEffect(() => {
     /*
     const getUser = ()=> {
       fetch("http://localhost:5000/auth/login/success", {
@@ -55,27 +60,25 @@ function App() {
           console.log(err);
         }); 
     };
-    getUser();  */
+    getUser();  
 
-    
     axios.get('http://localhost:5000/auth/login/success')
       .then(response => {
         if (response.status === 200) {
-        console.log(response);
         setUserName(response.data.userName);
         setUserID(response.data.userID);
         }
         else {
-          console.log('no one logged in');
           setUserName(null);
           setUserID(null);
         }
       })
 
 
-  },[]);
+  },[]); */
 
   class Login extends Component {
+    static contextType = UserContext;
     constructor(props) {
       super(props);
   
@@ -105,23 +108,42 @@ function App() {
       onSubmit(e) {
         e.preventDefault();
   
+        const { setUserName, setUserID } = this.context;
+
         const login = {
           username: this.state.username,
           password: this.state.password,
         }
-  
-        console.log(login);
-  
+    
         axios.post('http://localhost:5000/auth/login', login)
-          .then(res => {
-            console.log(res.data)
-            setUserName(res.data.user.userName);
-            setUserID(res.data.user.userID);
-            window.location = '/';
-          });
-      }
+        .then(res => {
+          console.log(res.data);
+          setUserName(res.data.userName);
+          setUserID(res.data.userID);
+          localStorage.setItem('token', res.data.token);
+        }); 
+        }
   
-      onSubmitQuick(e) {
+        onSubmitQuick(e) {
+          e.preventDefault();
+
+          const { setUserName, setUserID } = this.context;
+
+          const login = {
+            username: 'test1',
+            password: 'test',
+          }
+    
+          axios.post('http://localhost:5000/auth/login', login)
+            .then(res => {
+              console.log(res.data);
+              setUserName(res.data.userName);
+              setUserID(res.data.userID);
+              localStorage.setItem('token', res.data.token);
+            })
+            
+        }
+      onSubmitQuick2(e) {
         e.preventDefault();
   
         const login = {
@@ -129,7 +151,14 @@ function App() {
           password: 'test',
         }
   
-        axios.post('http://localhost:5000/auth/login', login)
+        axios.post('http://localhost:5000/test2', login)
+          .then(res => {
+            console.log(res);
+            axios.get('http://localhost:5000/test',
+            {headers: {'Authorization': `Bearer ${res.data.token}`}})
+          .then(res => {console.log(res)})
+          })
+        /*axios.post('http://localhost:5000/auth/login', login)
           .then(res => {
             console.log(res.data);
             setUserName(res.data.user.userName);
@@ -137,15 +166,12 @@ function App() {
             if (res.data.useruserName) {
               return res.data.user.userName;
             }
-          }).then(result => {
+          }).then(() => {
               window.location.href = '/';
-            if (result === userName) {
-              console.log('cool');
-            }
-          });
+          }); */
           
       }
-  //           {userName ? window.location = '/': <div> No one logged in </div>}
+
     render() {
       return (
         <div>
@@ -181,98 +207,39 @@ function App() {
   }
 
   function Logout() {
-    if (userID) {
+    const { setUserName, setUserID } = useContext(UserContext);
+    localStorage.removeItem('token')
+    if (userName) {
     axios.get('http://localhost:5000/auth/logout')
     .then(res => {
-      console.log(res.data);
       if (res.data.logout) {
-        setUserID(null);
-        setUserName(null);
+        setUserName(null)
+        setUserID(null)
       }
     })
-    .then(window.location = '/');
+    //.then(window.location = '/');
 
   }}
   
   return (
-    <BrowserRouter>
-      <Navbar userName={userName}/>
-      <br />
-      <Routes>
-        <Route path='/' exact element={<Home userName={userName} />} />
-        <Route path='/explore' element={<Explore />} />
-        <Route path='/myRecipes' element={<MyRecipes userID={userID} />} />
-        <Route path='/recipe/:id' element={<ViewRecipe userID={userID}/>} />
-        <Route path='/edit/:id' element={<EditRecipe userID={userID}/>} />
-        <Route path='/create' element={<CreateRecipe userID={userID}/>} />
-        <Route path='/user' element={<CreateUser/>} />
-        <Route path='/login' element={<Login userName={userName}/>} />
-        <Route path='/logout' element={<Logout />} />
-      </Routes>
-    </BrowserRouter>
-  );
-} 
-
-export default App;
-
-//*/
-
-/*
-class App extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = { user: undefined};
-  }
-
-  render() {
-    return (
+    <UserContext.Provider value={{userName, setUserName, userID, setUserID}}>
       <BrowserRouter>
         <Navbar />
         <br />
         <Routes>
-          <Route path='/' exact element={<Home user={this.state.user} />} />
-          <Route path='/explore' exact element={<RecipeList/>} />
+          <Route path='/' element={<Home userName={userName} />} />
+          <Route path='/explore' element={<Explore />} />
+          <Route path='/myRecipes' element={<MyRecipes />} />
           <Route path='/recipe/:id' element={<ViewRecipe />} />
-          <Route path='/edit/:id' element={<EditRecipe/>} />
-          <Route path='/create' element={<CreateRecipe/>} />
+          <Route path='/edit/:id' element={<EditRecipe />} />
+          <Route path='/create' element={<CreateRecipe />} />
           <Route path='/user' element={<CreateUser/>} />
-          <Route path='/login' element={<Login />} />
-        </Routes>
+          <Route path='/login' element={<Login userName={userName}/>} />
+          <Route path='/logout' element={<Logout />} />
+  </Routes> 
       </BrowserRouter>
-    )
-  }
-}
-*/
+    </UserContext.Provider>
+  );
+} 
 
-/*
-async function ViewRecipe() {
-  let state = {
-    name: '',
-    ingredients: [],
-    steps: [],
-    description: '',
-    notes: '',
-    creator: ''
-}
-
-  const { id } = useParams();
-  let recipe = await axios.get(`http://localhost:5000/recipe/${id}`)
-      .then(response => {
-        return {
-          name: response.data.name,
-          ingredients: response.data.ingredients,
-          steps: response.data.steps,
-          description: response.data.description,
-          notes: response.data.notes,
-          creator: response.data.creator
-        }
-      })
-      .catch((err) => {console.log(err)})
-  return (
-    <div>Is this it? {id}
-      <div>{recipe.name}</div>
-    </div>
-  )
-}
-*/
+export default App;

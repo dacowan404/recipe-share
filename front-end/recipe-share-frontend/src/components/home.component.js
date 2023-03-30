@@ -7,8 +7,6 @@ export default class RecipeList extends Component {
   
   }
 
-  //componentDidMount() {}
-
   render() {
     return (
       <div>

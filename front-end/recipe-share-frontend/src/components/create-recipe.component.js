@@ -17,7 +17,6 @@ export default class CreateRecipe extends Component {
     this.onSubmit = this.onSubmit.bind(this);
 
     this.state = {
-      creatorID : this.props.userID,
       name: "",
       ingredients: [''],
       steps: [''],
@@ -102,11 +101,17 @@ export default class CreateRecipe extends Component {
         editedDate: new Date()
       }
 
-      axios.post('http://localhost:5000/createRecipe', recipe)
-      .then(res => console.log(res.data)); // 1hour 25min
+      async function postRecipe(callback) {
+        await axios.post('http://localhost:5000/createRecipe', recipe, {headers: {'Authorization': `Bearer ${window.localStorage.getItem('token')}`}})
+        .then(callback);
+      }
+      postRecipe((res) => {
+        window.location.href = `/recipe/${res.data}`;
+      })
+      //axios.post('http://localhost:5000/createRecipe', recipe)
+      //.then(res => console.log(res.data))
+      //.then((id) => window.location.href = `/recipe/${id}`); // 1hour 25min
 
-      console.log(recipe);
-      //window.location = '/';
     }
 
   render() {

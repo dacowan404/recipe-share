@@ -1,4 +1,5 @@
 const express = require('express');
+const jwt = require('jsonwebtoken');
 const router = express.Router();
 
 const recipe_controller = require('../controllers/recipeController');
@@ -18,32 +19,70 @@ router.route('/explore/').get((req, res) => {
   .catch(err => res.status(400).json('Error routes/index.js ' + err))
 });
 
+function verifyToken(req, res, next) {
+  //get auth header value
+  const bearerHeader = req.headers['authorization'];
+  // check if bearer if undefined
+  if (typeof bearerHeader !== 'undefined') {
+    // get bearer from header
+    const bearer = bearerHeader.split(' ');
+    const bearerToken = bearer[1];
+    req.token = bearerToken;
+    next();
+  }
+  else {
+    // Forbidden
+    res.status(403).json({mess: 'here'});
+  }
+}
+
 // recipe routes
-router.route('/myrecipes/:id').get((req, res) => {
+router.get('/myrecipes', verifyToken, (req, res) => {
+  jwt.verify(req.token, 'secretKey', (err,  authData) => {
+    if (err) {
+      console.log(err)
+      res.status(403).json({message: '44'})
+    } else {
+      Recipe.find({creator: authData.userInfo.id})
+      .sort({likes:-1})
+      .then(recipes => res.status(200).json(recipes))
+      .catch(err => res.status(400).json('Error 49' + err))
+    }
+  })
+})
+/*router.route('/myrecipes/').get((req, res) => {
   Recipe.find({creator: req.params.id})
   .sort({likes:-1})
   .then(recipes => res.json(recipes))
   .catch(err => res.status(400).json('Error routes/index.js ' + err))
-});
+}); */
 
 // liked recipes 
 
 // create new recipe
 router.get('/createRecipe', recipe_controller.recipe_create_get);
 //router.post('/createRecipe', recipe_controller.recipe_create_post);
-router.route('/createRecipe').post((req, res) => {
-  const newRecipe = new Recipe({   
-    name: req.body.name,
-    ingredients: req.body.ingredients,
-    steps: req.body.steps,
-    description: req.body.description,
-    notes: req.body.notes,
-    creator: req.body.creator,
-    editedDate: req.body.editedDate
-  })
+router.post('/createRecipe', verifyToken, (req, res) => {
+  jwt.verify(req.token, 'secretKey', (err, authData) => {
+    if (err) {
+      console.log(err)
+      res.status(403).json({message: '44'})
+    } else {
+    const newRecipe = new Recipe({   
+      name: req.body.name,
+      ingredients: req.body.ingredients,
+      steps: req.body.steps,
+      description: req.body.description,
+      notes: req.body.notes,
+      creator: authData.userInfo.id,
+      editedDate: req.body.editedDate
+    })
 
-  newRecipe.save().then(()=> res.json("Recipe added"))
+  newRecipe.save().then((result)=> {
+    res.status(200).json(result.id)
+  })
     .catch(err => res.status(400).json('Error routes.index.js ' + err));
+}});
 })
 
 // delete recipe
@@ -100,7 +139,7 @@ router.route('/recipe/edit/:id').post((req, res, next) => {
         console.log(err);
         res.status(400).json('Request failed');
       } else {
-        res.status(200).json('recipe updated');
+        res.status(200).json(req.params.id);
       }
     });
     } else {

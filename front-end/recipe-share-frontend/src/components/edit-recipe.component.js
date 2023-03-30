@@ -118,11 +118,13 @@ export default class CreateRecipe extends Component {
         editedDate: new Date()
       }
 
-      axios.post(`http://localhost:5000/recipe/edit/${this.state.id}`, recipe)
-      .then(res => console.log(res.data)); // 1hour 25min
+      async function postEditRecipe(id, callback) {
+        axios.post(`http://localhost:5000/recipe/edit/${id}`, recipe).then(callback);
+      }
+      postEditRecipe(this.state.id, (res) => {
+        window.location.href = `/recipe/${res.data}`;
+       });
 
-      console.log(recipe);
-      //window.location = '/';
     }
 
   render() {
