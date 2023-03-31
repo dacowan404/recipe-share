@@ -1,5 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component, useContext, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { UserContext } from '../App';
 
 /*
 import { useParams } from 'react-router-dom';
@@ -50,7 +52,8 @@ function ViewRecipe() {
   );
 } */
 
-class ViewRecipe extends Component {
+/*class ViewRecipe extends Component {
+  //static contextType = UserContext;
   constructor(props) {
     super(props);
 
@@ -68,26 +71,7 @@ class ViewRecipe extends Component {
     this.handleEdit = this.handleEdit.bind(this);
     //console.log(this.props);
   }
-
-  handleDelete() {
-    console.log("delete the recipe");
-    //const id = window.location.href.split('/')[4];
-    const ID = {userID: this.props.userID}
-    axios.post(`http://localhost:5000/recipe/${this.state.id}/delete`, ID)
-      .then(res => {
-        console.log(res);
-        if (res.status === 200) {
-          console.log("cool");
-          window.location.href = '/myRecipes';
-        }
-      })
-  }
-
-  handleEdit() {
-    window.location.href = `/edit/${this.state.id}`;
-  }
-
-  componentDidMount() {
+    componentDidMount() {
     //const id = window.location.href.split('/')[4]
     //console.log(id2);
     //const id = '640f436275030bb85107eaf0';
@@ -104,28 +88,73 @@ class ViewRecipe extends Component {
       })
       .catch((err) => {console.log(err)})
   }
-  render() {
-    return (
-      <div>
-        <div> {this.state.name}</div>
-        <div> Made by {this.state.creator} </div>
-        <div> {this.state.description}</div>
-        <ul> Ingredients:
-          {this.state.ingredients.map((ingredient) => (
-            <li>{ingredient}</li>
-          ))}
-        </ul>
-        <ul> Steps:
-          {this.state.steps.map((step) => (
-            <li>{step}</li>
-          ))}
-        </ul>
-        <div>{this.state.notes}</div>
-        {this.props.userID === this.state.creator ? <div><button onClick={this.handleDelete}>Delete Recipe</button><button onClick={this.handleEdit}>Edit Recipe</button></div> : <div>not user</div>}
+  */
+ function ViewRecipe() {
+  const { userID } = useContext(UserContext);
+  const [ id, setID] = useState(window.location.href.split('/')[4])
+  const [ name, setName] = useState('')
+  const [ ingredients, setIngredients] = useState([])
+  const [ steps, setSteps] = useState([])
+  const [ description, setDescription] = useState('')
+  const [ notes, setNotes] = useState('')
+  const [ creator, setCreator ] = useState('')
 
-      </div>
-    )
+  useEffect(() => {
+      //const id = window.location.href.split('/')[4]
+      //console.log(id2);
+      //const id = '640f436275030bb85107eaf0';
+    axios.get(`http://localhost:5000/recipe/${id}`)
+      .then(response => {
+        setName(response.data.name);
+        setIngredients(response.data.ingredients)
+        setSteps(response.data.steps);
+        setDescription(response.data.description);
+        setNotes(response.data.notes);
+        setCreator(response.data.creator)
+      })
+      .catch((err) => {console.log(err)})
+      console.log(userID);
+    
+  }, [])
+
+  const handleDelete = () => {
+    console.log("delete the recipe");
+    //const id = window.location.href.split('/')[4];
+    axios.delete(`http://localhost:5000/recipe/${id}`, {headers: {'Authorization': `Bearer ${window.localStorage.getItem('token')}`}})
+      .then(res => {
+        console.log(res);
+        if (res.status === 200) {
+          console.log("cool");
+          window.location.href = '/myRecipes';
+        }
+      })
   }
+
+  const handleEdit = () => {
+    window.location.href = `/edit/${id}`;
+  }
+
+  return (
+    <div>
+      <div> {name}</div>
+      <div> Made by {creator} </div>
+      <div> {description}</div>
+      <ul> Ingredients:
+        {ingredients.map((ingredient) => (
+          <li>{ingredient}</li>
+        ))}
+      </ul>
+      <ul> Steps:
+        {steps.map((step) => (
+          <li>{step}</li>
+        ))}
+      </ul>
+      <div>{notes}</div>
+      {userID === creator ? <div><button onClick={handleDelete}>Delete Recipe</button>
+      <Link to={`/edit/${id}`}>Edit Recipe</Link></div> : <div>not user</div>}
+
+    </div>
+  )
 }
 
 

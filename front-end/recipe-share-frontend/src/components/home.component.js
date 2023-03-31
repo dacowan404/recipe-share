@@ -1,18 +1,17 @@
-import React, { Component } from 'react';
+import React, { Component, useContext } from 'react';
 import axios from 'axios';
+import { UserContext } from '../App';
 
-export default class RecipeList extends Component {
-  constructor(props) {
-    super(props);
-  
-  }
 
-  render() {
-    return (
-      <div>
-        <p>Home</p>
-        {this.props.userName ? <div>Hello {this.props.userName}</div> : <div>no one logged in</div>}
-      </div>
-    )
-  }
+function Home()  {
+  const { userName } = useContext(UserContext);
+
+  return (
+    <div>
+      <p>Home</p>
+      {userName ? <div>Hello {userName}</div> : <div>no one logged in</div>}
+    </div>
+  )
 }
+
+export default Home;

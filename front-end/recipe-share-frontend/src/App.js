@@ -227,14 +227,14 @@ function App() {
         <Navbar />
         <br />
         <Routes>
-          <Route path='/' element={<Home userName={userName} />} />
+          <Route path='/' element={<Home />} />
           <Route path='/explore' element={<Explore />} />
           <Route path='/myRecipes' element={<MyRecipes />} />
           <Route path='/recipe/:id' element={<ViewRecipe />} />
           <Route path='/edit/:id' element={<EditRecipe />} />
           <Route path='/create' element={<CreateRecipe />} />
           <Route path='/user' element={<CreateUser/>} />
-          <Route path='/login' element={<Login userName={userName}/>} />
+          <Route path='/login' element={<Login />} />
           <Route path='/logout' element={<Logout />} />
   </Routes> 
       </BrowserRouter>

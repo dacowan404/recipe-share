@@ -38,7 +38,6 @@ export default class CreateRecipe extends Component {
         description: response.data.description,
         notes: response.data.notes,
       })
-      console.log(this.state.ingredients);
     })
     .catch((err) => {console.log(err)})
   }
@@ -119,10 +118,11 @@ export default class CreateRecipe extends Component {
       }
 
       async function postEditRecipe(id, callback) {
-        axios.post(`http://localhost:5000/recipe/edit/${id}`, recipe).then(callback);
+        axios.put(`http://localhost:5000/recipe/${id}`, recipe, {headers: {'Authorization': `Bearer ${window.localStorage.getItem('token')}`}}).then(callback);
       }
       postEditRecipe(this.state.id, (res) => {
-        window.location.href = `/recipe/${res.data}`;
+        console.log(res.data)
+        //window.location.href = `/recipe/${res.data}`;
        });
 
     }
