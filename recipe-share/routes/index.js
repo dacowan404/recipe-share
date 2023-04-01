@@ -2,22 +2,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
 
-const recipe_controller = require('../controllers/recipeController');
 const Recipe = require('../models/recipe');
-
-/* GET home page. */
-
-router.get('/', (req, res, next) => {
-  res.render("index", { title: "Express", user: req.user });
-});
-
-//router.get('/explore', recipe_controller.recipe_list);
-router.route('/explore/').get((req, res) => {
-  Recipe.find({})
-  .sort({likes: -1})
-  .then(recipes => res.json(recipes))
-  .catch(err => res.status(400).json('Error routes/index.js ' + err))
-});
 
 function verifyToken(req, res, next) {
   //get auth header value
@@ -32,9 +17,16 @@ function verifyToken(req, res, next) {
   }
   else {
     // Forbidden
-    res.status(403).json({mess: 'here'});
+    res.status(403).json({mess: 'invalid access token'});
   }
 }
+
+router.route('/explore/').get((req, res) => {
+  Recipe.find({})
+  .sort({likes: -1})
+  .then(recipes => res.json(recipes))
+  .catch(err => res.status(400).json('Error routes/index.js ' + err))
+});
 
 // recipe routes
 router.get('/myrecipes', verifyToken, (req, res) => {
@@ -50,18 +42,7 @@ router.get('/myrecipes', verifyToken, (req, res) => {
     }
   })
 })
-/*router.route('/myrecipes/').get((req, res) => {
-  Recipe.find({creator: req.params.id})
-  .sort({likes:-1})
-  .then(recipes => res.json(recipes))
-  .catch(err => res.status(400).json('Error routes/index.js ' + err))
-}); */
 
-// liked recipes 
-
-// create new recipe
-router.get('/createRecipe', recipe_controller.recipe_create_get);
-//router.post('/createRecipe', recipe_controller.recipe_create_post);
 router.post('/createRecipe', verifyToken, (req, res) => {
   jwt.verify(req.token, 'secretKey', (err, authData) => {
     if (err) {
@@ -86,8 +67,6 @@ router.post('/createRecipe', verifyToken, (req, res) => {
 })
 
 // delete recipe
-//router.get('/recipe/:id/delete', recipe_controller.recipe_delete_get);
-//router.post('/recipe/:id/delete', recipe_controller.recipe_delete_post);
 router.delete('/recipe/:id', verifyToken, (req, res, next) => {
   async function recipe(callback) {
     await Recipe.findById(req.params.id).exec(callback);
@@ -158,11 +137,8 @@ router.put('/recipe/:id', verifyToken, (req, res, next) => {
     })
   })
 })
-router.get('/:id/:id2/update', recipe_controller.recipe_update_get)
-router.post('/:id/:id2/update', recipe_controller.recipe_update_post)
 
 // view a recipe
-//router.get('/recipe/:id', recipe_controller.recipe_detail);
 router.route('/recipe/:id').get((req, res) => {
   Recipe.findById(req.params.id)
     .exec((err, recipe) => {

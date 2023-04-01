@@ -121,8 +121,7 @@ export default class CreateRecipe extends Component {
         axios.put(`http://localhost:5000/recipe/${id}`, recipe, {headers: {'Authorization': `Bearer ${window.localStorage.getItem('token')}`}}).then(callback);
       }
       postEditRecipe(this.state.id, (res) => {
-        console.log(res.data)
-        //window.location.href = `/recipe/${res.data}`;
+        window.location.href = `/recipe/${res.data}`;
        });
 
     }

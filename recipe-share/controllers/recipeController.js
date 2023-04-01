@@ -1,11 +1,11 @@
+// This file isn't really used but may need to reference when sanitizing user input
+
 const recipe = require("../models/recipe");
 const Recipe = require("../models/recipe");
 const user = require("../models/user");
 const User = require("../models/user");
-const { param } = require("../routes");
 
 const { body, validationResult } = require("express-validator");
-
 // need an index/home page showing top recipes. idk where to put it
 
 exports.recipe_list = (req, res, next) => {

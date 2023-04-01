@@ -106,13 +106,8 @@ export default class CreateRecipe extends Component {
         .then(callback);
       }
       postRecipe((res) => {
-        console.log(res.data)
-        //window.location.href = `/recipe/${res.data}`;
+        window.location.href = `/recipe/${res.data}`;
       })
-      //axios.post('http://localhost:5000/createRecipe', recipe)
-      //.then(res => console.log(res.data))
-      //.then((id) => window.location.href = `/recipe/${id}`); // 1hour 25min
-
     }
 
   render() {

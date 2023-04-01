@@ -1,12 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
-
-const RecipeCard = props => (
-  <li>
-    <Link to={`/recipe/${props.recipe._id}`}> {props.recipe.name} </Link>
-  </li>
-)
+import RecipeCard from './recipe-card-component';
 
 export default class RecipeList extends Component {
   constructor(props) {

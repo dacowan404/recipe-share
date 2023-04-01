@@ -1,24 +1,7 @@
-import axios from 'axios';
-import React, { Component, useContext } from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { UserContext } from '../App';
 
-/*export default class Navbar extends Component {
-  static contextType = UserContext;
-  constructor(props) {
-    super(props)
-
-
-    this.testThis = this.testThis.bind(this);
-  }
-
-  testThis = () => {
-    axios.get('http://localhost:5000/test', {headers: {'Authorization': `Bearer ${window.localStorage.getItem('token')}`}})
-    .then(res => {console.log(res.data.authData.userInfo)})
-  }
-
-  render()} */
-  
 function Navbar() {
   const { userName } = useContext(UserContext);
   return (
@@ -60,8 +43,5 @@ function Navbar() {
     </nav>
     )
   }
-
-//<button onClick={this.testThis}>Click</button>
-//this.props.userName ? <div>logged into {this.props.userName}</div> : <div>not logged in</div>}
 
 export default Navbar;
