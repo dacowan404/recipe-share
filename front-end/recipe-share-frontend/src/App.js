@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import React, { useEffect, useContext, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import './App.css';
@@ -9,6 +9,7 @@ import Explore from "./components/recipe-list.component";
 import MyRecipes from "./components/myRecipes.component";
 import ViewRecipe from "./components/view-recipe.component";
 import EditRecipe from "./components/edit-recipe.component";
+import DeleteRecipe from "./components/delete-recipe.component";
 import CreateRecipe from "./components/create-recipe.component";
 import CreateUser from "./components/create-user.component";
 import Login from "./components/login.component";
@@ -45,14 +46,16 @@ function App() {
   return (
     <UserContext.Provider value={{userName, setUserName, userID, setUserID}}>
       <BrowserRouter>
-        <Navbar />
-        <br />
+        <div className="nav">
+          <Navbar />
+        </div>
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/explore' element={<Explore />} />
           <Route path='/myRecipes' element={<MyRecipes />} />
           <Route path='/recipe/:id' element={<ViewRecipe />} />
           <Route path='/edit/:id' element={<EditRecipe />} />
+          <Route path='/delete/:id' element={<DeleteRecipe />} />
           <Route path='/create' element={<CreateRecipe />} />
           <Route path='/user' element={<CreateUser/>} />
           <Route path='/login' element={<Login />} />

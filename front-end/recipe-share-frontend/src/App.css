@@ -1,12 +1,3 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -24,10 +15,6 @@
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
-}
-
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
@@ -35,4 +22,127 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.navbar {
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+  background-color: #282c34; 
+}
+
+.navContainer {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  color: white;
+}
+
+.navContainer a {
+  font-size: large;
+  font-weight: bold;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#title {
+  font-size: 50px;
+  font-weight: bolder;
+  color: white;
+  text-decoration: none;
+  text-align: start;
+  padding: 10px;
+}
+
+a {
+  text-decoration: none;
+  text-align: center;
+}
+
+.welcome {
+  padding: 20px;
+  text-align: center;
+  font-size: larger;
+  font-weight: bold;
+}
+
+.home {
+  text-align: left;
+  padding-left: 15px;
+
+}
+
+.recipeList {
+  background-color: rgba(31, 29, 29, 0.826);
+  padding: 20px;
+}
+
+#exploreTitle {
+  color: white;
+  font-size: x-large;
+  font-weight: bolder;
+  text-align: center;
+}
+
+.recipeCard {
+  background-color: #61dafb;
+  border: 3px solid white ;
+  height: 200px;
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.RCtitle {
+  color: #282c34; 
+  font-size: larger;
+  font-weight: bold;
+}
+
+.recipeCardContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 210px);
+  grid-template-rows: repeat(auto-fit, 210px);
+  gap: 15px;
+}
+
+.creator {
+  text-align: center;
+  color: white;
+  font-size: large;
+}
+
+.description {
+  color: white;
+}
+
+.ingreTitle, .stepTitle {
+  color: white;
+  font-size: larger;
+  text-decoration: underline;
+}
+
+.ingredients, .steps {
+  color: white;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  font-size: large;
+  padding-left: 20px;
+}
+
+.notes {
+  color: white;
+}
+
+.notesTitle {
+  text-decoration: underline;
+  color: white;
+}
+
+.editRecipe, .deleteRecipe {
+  color: white;
+  background-color: blueviolet;
+  border: 2px solid black;
+  margin-right: 10px;
+  padding: 5px;
 }

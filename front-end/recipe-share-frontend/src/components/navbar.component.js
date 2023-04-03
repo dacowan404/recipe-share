@@ -6,42 +6,29 @@ function Navbar() {
   const { userName } = useContext(UserContext);
   return (
     <nav className='navbar'>
-      <Link to="/">Recipe Share</Link>
-      <div>
-        <ul>
-        <li>
-            <Link to='/'>Home</Link>
-          </li>
-          <li>
-            <Link to='/explore'>Explore</Link>
-          </li>
+      <Link to="/" id='title'>Recipe Share</Link>
+      <div className='navContainer'>
+        <Link to='/'>Home</Link>
+        <Link to='/explore'>Explore</Link>
 
-          {userName ? 
-            <div> Hi {userName}
-              <li>
-                <Link to='/create'>Create</Link>
-              </li>
-              <li>
-                <Link to='/myRecipes'>My Recipes</Link>
-              </li>
-              <li>
-              <Link to='/logout'>Logout</Link>
-              </li>
-            </div> : 
-            <div>
-              <li>
-                <Link to='/user'>Create User</Link>
-              </li>
-              <li>
-                <Link to='/login'>Login</Link>
-              </li>
-            </div>
-          }
+      { userName ? 
+      <>
+        <Link to='/create'>Create Recipe</Link>
+        <Link to='/myRecipes'>My Recipes</Link>
+        <Link to='/logout'>Logout</Link>
+      </>
+      : <>
+        <div></div>
+        <Link to='/user'>Create Account</Link>
+        <Link to='/login'>Login</Link>
+      </>
+      }
 
-          </ul>
+
       </div>
     </nav>
     )
   }
 
 export default Navbar;
+

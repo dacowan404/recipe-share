@@ -5,13 +5,15 @@ import { UserContext } from '../App';
 
  function ViewRecipe() {
   const { userID } = useContext(UserContext);
-  const [ id, setID] = useState(window.location.href.split('/')[4])
+  const [ id, ] = useState(window.location.href.split('/')[4])
   const [ name, setName] = useState('')
   const [ ingredients, setIngredients] = useState([])
   const [ steps, setSteps] = useState([])
   const [ description, setDescription] = useState('')
   const [ notes, setNotes] = useState('')
   const [ creator, setCreator ] = useState('')
+
+  let key = 0;
 
   useEffect(() => {
     axios.get(`http://localhost:5000/recipe/${id}`)
@@ -24,35 +26,40 @@ import { UserContext } from '../App';
         setCreator(response.data.creator)
       })
       .catch((err) => {console.log(err)})   
-  }, [])
-
-  const handleDelete = () => {
-    axios.delete(`http://localhost:5000/recipe/${id}`, {headers: {'Authorization': `Bearer ${window.localStorage.getItem('token')}`}})
-      .then(res => {
-        if (res.status === 200) {
-          window.location.href = '/myRecipes';
-        }
-      })
-  }
+  }, [id])
 
   return (
-    <div>
-      <div> {name}</div>
-      <div> Made by {creator} </div>
-      <div> {description}</div>
-      <ul> Ingredients:
-        {ingredients.map((ingredient) => (
-          <li>{ingredient}</li>
-        ))}
+    <div className='recipeList'>
+      <div id='exploreTitle'> {name}</div>
+      <div className='creator'> Made by {creator} </div>
+      <p className='description'>{description}</p>
+      <div className='ingreTitle'>Ingredients:</div>
+      <ul className='ingredients'>
+        {ingredients.map((ingredient) => {
+          key = key + 1;
+          return (
+            <li key={key}>{ingredient}</li>
+          )}
+        )}
       </ul>
-      <ul> Steps:
-        {steps.map((step) => (
-          <li>{step}</li>
-        ))}
-      </ul>
-      <div>{notes}</div>
-      {userID === creator ? <div><button onClick={handleDelete}>Delete Recipe</button>
-      <Link to={`/edit/${id}`}>Edit Recipe</Link></div> : <div>not user</div>}
+      <div className='stepTitle'>Steps:</div>
+      <ol className='steps'>
+        {steps.map((step) => {
+          key = key + 1;
+          return (
+            <li key={key}>{step}</li>
+          )}
+        )}
+      </ol>
+      <div className='notesTitle'>Additional Notes</div>
+      <div className='notes'>{notes}</div>
+      {userID === creator ? 
+      <div>
+        <br />
+        <Link to={`/edit/${id}`} className='editRecipe'>Edit Recipe</Link>
+        <Link to={`/delete/${id}`} className='deleteRecipe'>Delete Recipe</Link>
+      </div> : 
+      <div><br />not user</div>}
 
     </div>
   )

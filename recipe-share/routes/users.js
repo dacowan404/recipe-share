@@ -120,7 +120,6 @@ router.post('/auth/login', function (req, res, next) {
       console.log('197');
       res.send(err);
     }
-    console.log(user);
     const userInfo = { 
       username: user.username,
       email: user.email,

@@ -19,10 +19,9 @@ export default class RecipeList extends Component {
   
   render() {
     return (
-      <div>
-        <div>My Recipes</div>
-        <p>Recipe List</p>
-        <ul>
+      <div className='recipeList'>
+        <div id='exploreTitle'>My Recipes</div>
+        <ul className='recipeCardContainer'>
           {this.state.recipes.map((recipe) => {
             return <RecipeCard recipe={recipe} key={recipe._id} />
           })

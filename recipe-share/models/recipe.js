@@ -4,7 +4,7 @@ const { DateTime } = require("luxon");
 const Schema = mongoose.Schema;
 
 const RecipeSchema = new Schema({
-  name: { type: String, maxLength: 100},
+  name: { type: String, maxLength: 40},
   ingredients: [{ type: String, required: true}],
   steps: [{ type: String, required: true}],
   description: { type: String, maxLength: 160},
