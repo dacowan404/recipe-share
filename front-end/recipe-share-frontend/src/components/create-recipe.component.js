@@ -112,52 +112,64 @@ export default class CreateRecipe extends Component {
 
   render() {
     return (
-      <div>
-        <h3>Create New Recipe</h3>
-        <form onSubmit={this.onSubmit}>
-          <div> User: {this.props.userID}</div>
+      <div className='center'>
+        <div className='recipeForm'>
+          <h3>Create New Recipe</h3>
+          <form onSubmit={this.onSubmit}>
+            <fieldset>
+              <legend>Recipe Info</legend>
+              <div className='formField'>
+                <label>Name</label><br />
+                <input type="text" value={this.state.name} maxLength="40" onChange={this.OnChangeName} />
+                {this.state.name.length > 30 ? <div>{this.state.name.length}/40</div> : <div></div>}
+              </div>
 
-          <div>
-            <label>Recipe Name:</label>
-            <input type="text" value={this.state.name} onChange={this.OnChangeName} />
-          </div>
+              <div className='formField'>
+                <label>Short Description</label><br />
+                <textarea type="text" cols="75" rows="4" maxLength="160" value={this.state.description} onChange={this.OnChangeDescription} />
+                <div>{this.state.description.length}/160</div>
+              </div>
 
-          {this.state.ingredients.map((ingredient, index) => (
-            <div key={index}>
-              <label htmlFor={`ingredient-${index}`}>Ingredient {index +1}</label>
-              <input type="text" id={`ingredient-${index}`} value={ingredient} onChange={(event) => this.handleIngredientChange(index, event.target.value)}/>
-              {this.state.ingredients.length > 1 && (
-                <button type="button" onClick={() => this.handleRemoveIngredient(index)}>Remove</button>
-              )}
+              <div className='formField'>
+                <label>Long Description/Notes</label><br />
+                <textarea type="text" cols="75" rows="4" value={this.state.notes} onChange={this.OnChangeNotes} />
+              </div>
+            </fieldset>
+            
+            <fieldset>
+              <legend>Ingredients</legend>
+              {this.state.ingredients.map((ingredient, index) => (
+                <div key={index} className='formField'>
+                  <label htmlFor={`ingredient-${index}`}>#{index +1}</label>
+                  <input type="text" id={`ingredient-${index}`} value={ingredient} onChange={(event) => this.handleIngredientChange(index, event.target.value)}/>
+                  {this.state.ingredients.length > 1 && (
+                    <button type="button" onClick={() => this.handleRemoveIngredient(index)}>Remove</button>
+                  )}
+                </div>
+              ))}
+              <button type="button" onClick={this.handleAddIngredient}>Add Ingredient</button>
+            </fieldset>
+            <fieldset>
+              <legend>Steps</legend>
+            {this.state.steps.map((step, index) => (
+              <div key={index} className='formField'>
+                <label htmlFor={`step-${index}`}>#{index +1}</label>
+                <input type="text" id={`step-${index}`} value={step} onChange={(event) => this.handleStepChange(index, event.target.value)}/>
+                {this.state.steps.length > 1 && (
+                  <button type="button" onClick={() => this.handleRemoveStep(index)}>Remove</button>
+                )}
+              </div>
+            ))}
+            <button type="button" onClick={this.handleAddStep}>Add Step</button>
+            </fieldset>
+
+
+            <div className='submit'>
+              <input type="submit" value="Create New Recipe" />
             </div>
-          ))}
-          <button type="button" onClick={this.handleAddIngredient}>Add Ingredient</button>
 
-          {this.state.steps.map((step, index) => (
-            <div key={index}>
-              <label htmlFor={`step-${index}`}>Step {index +1}</label>
-              <input type="text" id={`step-${index}`} value={step} onChange={(event) => this.handleStepChange(index, event.target.value)}/>
-              {this.state.steps.length > 1 && (
-                <button type="button" onClick={() => this.handleRemoveStep(index)}>Remove</button>
-              )}
-            </div>
-          ))}
-          <button type="button" onClick={this.handleAddStep}>Add Step</button>
-
-          <div>
-            <label>Description (200 characters or less): </label>
-            <input type="text" maxLength="200" value={this.state.description} onChange={this.OnChangeDescription} />
-          </div>
-
-          <div>
-            <label>Notes: </label>
-            <input type="text" value={this.state.notes} onChange={this.OnChangeNotes} />
-          </div>
-          <div>
-            <input type="submit" value="Create New Recipe" />
-          </div>
-
-        </form>
+          </form>
+        </div>
       </div>
     )
   }

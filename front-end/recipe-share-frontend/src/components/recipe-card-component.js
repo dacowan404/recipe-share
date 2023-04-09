@@ -9,11 +9,13 @@ function RecipeCard(props) {
     description = props.recipe.description;
   }
   return (
-  <Link to={`/recipe/${props.recipe._id}`} className="recipeCard">
-    <div className="RCtitle">{props.recipe.name}</div>
-    <div>{description}</div>
-    <div></div>
-    <div> Likes: {props.recipe.likes}</div>
+  <Link to={`/recipe/${props.recipe._id}`} className="background">
+    <div className="recipeCard">
+      <div className="RCtitle">{props.recipe.name}</div>
+      <div>{description}</div>
+      <div></div>
+      <div> Likes: {props.recipe.likes}</div>
+    </div>
   </Link>
 )}
 

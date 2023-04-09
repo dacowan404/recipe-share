@@ -1,3 +1,9 @@
+:root {
+  --primaryColor: #282c34;
+  --secondColor: #abc123;
+  --altColor: #123abc;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -26,29 +32,34 @@
 
 .navbar {
   display: grid;
-  grid-template-columns: 2fr 3fr;
-  background-color: #282c34; 
+  grid-template-columns: 330px 1fr minmax(450px, 620px);
+  /*background-color: #282c34; */
+  background-image: url('../public/background.svg');
+  color: #282c34;
 }
 
 .navContainer {
+  grid-column-start: 3;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  color: white;
+  grid-template-columns: repeat(5, minmax(80px, 120px));
+  gap: 5px;
 }
 
 .navContainer a {
   font-size: large;
   font-weight: bold;
-  color: white;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  text-align: center;
+  max-width: 120px;
+  color:#282c34;
 }
 
 #title {
   font-size: 50px;
   font-weight: bolder;
-  color: white;
+  color: #282c34;
   text-decoration: none;
   text-align: start;
   padding: 10px;
@@ -60,16 +71,19 @@ a {
 }
 
 .welcome {
-  padding: 20px;
+  padding: 15px;
   text-align: center;
-  font-size: larger;
+  font-size: x-large;
+  color: #282c34;
   font-weight: bold;
 }
 
 .home {
-  text-align: left;
-  padding-left: 15px;
-
+  text-align: center;
+  width: min(100vw, 600px);
+  background-color: #282c34;
+  color: white;
+  padding: 5px 15px;
 }
 
 .recipeList {
@@ -84,26 +98,35 @@ a {
   text-align: center;
 }
 
+.background {
+
+  padding: 20px;
+}
+
 .recipeCard {
-  background-color: #61dafb;
-  border: 3px solid white ;
+  border-radius: 15px;
+  background-color: white;
+  border: 3px solid red;
   height: 200px;
   width: 200px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  font-weight: bold;
 }
 .RCtitle {
   color: #282c34; 
   font-size: larger;
-  font-weight: bold;
+  font-weight: bolder;
 }
 
 .recipeCardContainer {
+  background-image: url('../public/background.svg');
+  background-color: white;
   display: grid;
-  grid-template-columns: repeat(auto-fit, 210px);
-  grid-template-rows: repeat(auto-fit, 210px);
-  gap: 15px;
+  grid-template-columns: repeat(auto-fit, 250px);
+  grid-template-rows: repeat(auto-fit, 250px);
+  gap: 25px;
 }
 
 .creator {
@@ -140,9 +163,53 @@ a {
 }
 
 .editRecipe, .deleteRecipe {
-  color: white;
-  background-color: blueviolet;
-  border: 2px solid black;
+  color:#282c34;
+  background-color: white;
+  font-weight: bold;
+  border: 2px solid #282c34;
   margin-right: 10px;
   padding: 5px;
+}
+
+.userForm, .recipeForm {
+  margin: 30px;
+  padding: 20px 10px;
+  color: white;
+  background-color: #282c34;
+  text-align: center;
+}
+
+.userForm {
+  width: 400px;
+}
+
+.recipeForm {
+  width: 600px;
+}
+
+.formField {
+  margin-bottom: 10px;
+}
+
+label {
+  text-align: left;
+}
+
+.center {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+h3 {
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+form {
+  margin-top: 20px;
+}
+
+.submit {
+  margin-top: 20px;
 }

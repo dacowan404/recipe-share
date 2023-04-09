@@ -3,7 +3,7 @@ import axios from 'axios';
 import { UserContext } from '../App';
 
 function Login() {
-  const { setUserName, setUserID } = useContext(UserContext);
+  const { BACKEND_ADDRESS, setUserName, setUserID } = useContext(UserContext);
   const [ loginUsername, setLoginUsername ] = useState('');
   const [ password, setPassword ] = useState('');
 
@@ -24,7 +24,7 @@ function Login() {
       password: password,
     }
 
-    axios.post('http://localhost:5000/users/auth/login', login)
+    axios.post(BACKEND_ADDRESS +'/users/auth/login', login)
       .then(res => {
         setUserName(res.data.userName);
         setUserID(res.data.userID);
@@ -38,43 +38,58 @@ function Login() {
 
     const onSubmitQuick = (e) => {
       e.preventDefault();
-      setLoginUsername('test1');
-      setPassword('test');
 
-      /*this.setState({
+      const login = {
         username: 'test1',
-        password: 'test'
-      }, () => {
-        this.onSubmit(e);
-      }); */
+        password: 'test',
+      }
+  
+      axios.post(BACKEND_ADDRESS + '/users/auth/login', login)
+        .then(res => {
+          setUserName(res.data.userName);
+          setUserID(res.data.userID);
+          localStorage.setItem('token', res.data.token);
+        })
+        .then(() => {
+          window.location.href = '/';
+        }); 
     }
 
   return (
     <div>
-      <h3>Login</h3>
-
-      <form onSubmit={onSubmit}>
-        <div>
-          <label>User Name:</label>
-          <input type="text" required value={loginUsername} onChange={OnChangeLoginUserName} />
+      <div className='center'>
+        <div className='userForm'>
+          <h3>Quick Login</h3>
+          <div>Use quick login to test features of Recipe Share <br /> without needing to create an account<br /></div>
+          <form onSubmit={onSubmitQuick}>
+              <div>
+                <input type="submit" value="Quick Login" />
+              </div>
+          </form>
         </div>
 
-        <div>
-          <label>Password:</label>
-          <input type="password" required value={password} onChange={OnChangePassword} />
-        </div>
+        <div className='userForm'>
+          <h3>Login</h3>
+          <div>Or if you already have an account login<br /></div>
+          <form onSubmit={onSubmit}>
+            <fieldset>
+              <div className='formField'>
+                <label>Username:</label><br />
+                <input type="text" required value={loginUsername} onChange={OnChangeLoginUserName} />
+              </div>
 
-        <div>
-          <input type="submit" value="Login" />
-        </div>
-      </form>
+              <div className='formField'>
+                <label>Password:</label><br />
+                <input type="password" required value={password} onChange={OnChangePassword} />
+              </div>
 
-      <h3>Quick Login</h3>
-      <form onSubmit={onSubmitQuick}>
-        <div>
-          <input type="submit" value="Quick Login" />
+              <div className='submit'>
+                <input type="submit" value="Login" />
+              </div>
+            </fieldset>
+          </form>
         </div>
-      </form>
+      </div>
     </div>
   )
 }

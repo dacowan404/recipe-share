@@ -4,7 +4,7 @@ import axios from 'axios';
 import { UserContext } from '../App';
 
  function ViewRecipe() {
-  const { userID } = useContext(UserContext);
+  const { BACKEND_ADDRESS, userID } = useContext(UserContext);
   const [ id, ] = useState(window.location.href.split('/')[4])
   const [ name, setName] = useState('')
   const [ ingredients, setIngredients] = useState([])
@@ -16,7 +16,7 @@ import { UserContext } from '../App';
   let key = 0;
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/recipe/${id}`)
+    axios.get(`${BACKEND_ADDRESS}/recipe/${id}`)
       .then(response => {
         setName(response.data.name);
         setIngredients(response.data.ingredients)
