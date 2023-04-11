@@ -1,9 +1,12 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const router = express.Router();
 const User = require("../models/user");
 const passport = require('passport');
 const LocalStrategy = require("passport-local").Strategy;
+
+const secretKey = process.env.SECRET_KEY;
 
 passport.use(
   new LocalStrategy((username, password, done) => {
@@ -14,11 +17,13 @@ passport.use(
       if (!user) {
         return done(null, false, {message: "Incorrect Username" });
       }
-      if (user.password !== password) {
-        return done(null, false, {message: "Incorrect Password"});
-      }
-      return done(null, user);
-    });
+      encryptPassword(password, user.salt, (encryptedPW) => {
+        if (user.password !== encryptedPW) {
+          return done(null, false, {message: "Incorrect Password"});
+        }
+        return done(null, user);
+      });
+    })
   })
 );
 
@@ -39,15 +44,27 @@ function verifyToken(req, res, next) {
   }
 }
 
+function encryptPassword(password, salt, next) {
+  crypto.pbkdf2(password, salt, 600000, 32, 'sha256', (err, derivedKey) => {
+    if (err) {
+      res.status(403).json({mess: 51})
+    } else {
+      next(derivedKey.toString('hex'));
+    }
+  });
+}
+
 // need to create token and login after creating user
 router.route('/new-user').post((req, res) => {
-  const newUser = new User({
-    username: req.body.username,
-    password: req.body.password,
-    email: req.body.email
-  });
-
-  newUser.save()
+  const salt = crypto.randomBytes(16).toString('hex')
+  encryptPassword(req.body.password, salt, (encryptedPW) => {
+    const newUser = new User({
+      username: req.body.username,
+      password: encryptedPW,
+      salt: salt,
+      email: req.body.email
+      });
+    newUser.save()
     .then(() => {
       passport.authenticate('local', {session: false}, (err, user, info) => {
         if (err || !user) {
@@ -62,23 +79,23 @@ router.route('/new-user').post((req, res) => {
           console.log('62');
           res.send(err);
         }
-        console.log(user);
         const userInfo = { 
           username: user.username,
           email: user.email,
           id: user._id
         }
         // generate a signed json web token with the contents of user object and return it in the response
-        const token = jwt.sign({userInfo}, 'secretKey', {expiresIn: "1h"});
+        const token = jwt.sign({userInfo}, secretKey, {expiresIn: "1h"});
                   res.status(200).json({userName:user.username, userID: user._id, token});
                 });
             })(req, res);
     })
     .catch(err => res.status(400).json('Error routes/users.js ' + err));
-})
+    })
+});
 
 router.get("/auth/checkLogin", verifyToken, (req, res) => {
-  jwt.verify(req.token, 'secretKey', (err, authData) => {
+  jwt.verify(req.token, secretKey, (err, authData) => {
     if (err) {
       console.log(err);
       res.status(403).json({mess:58})
@@ -94,7 +111,7 @@ router.get("/auth/checkLogin", verifyToken, (req, res) => {
 router.get("/auth/login/failed", (req,res) => {
   res.status(401).json({
       success:false,
-      message: "failed login",
+      message: "no one logged in",
   });
  });
 
@@ -108,17 +125,18 @@ router.get("/auth/logout", (req, res, next) => {
 //login route
 router.post('/auth/login', function (req, res, next) {
   passport.authenticate('local', {session: false}, (err, user, info) => {
-    if (err || !user) {
-      console.log('186');
+    if (err ) {
+      console.log(err);
+      return res.status(400).json({login:false})
+    } else if (!user) {
       return res.status(401).json({
-        message: 'Something is not right',
-        user : user.username
+        login: false,
       });
     }
   req.login(user, {session: false}, (err) => {
     if (err) {
       console.log('197');
-      res.send(err);
+      res.status(402).json({login: false, err});
     }
     const userInfo = { 
       username: user.username,
@@ -126,10 +144,45 @@ router.post('/auth/login', function (req, res, next) {
       id: user._id
     }
     // generate a signed json web token with the contents of user object and return it in the response
-    const token = jwt.sign({userInfo}, 'secretKey', {expiresIn: "1h"});
+    const token = jwt.sign({userInfo}, secretKey, {expiresIn: "1h"});
               res.status(200).json({userName:user.username, userID: user._id, token});
             });
         })(req, res);
   });
+
+  router.put('/update', verifyToken, function (req, res, next) {
+    jwt.verify(req.token, secretKey, (err, authData) => {
+      if (err) {
+        console.log(err);
+        res.status(403).json({mess:139})
+      } else {
+        if (req.body.username !== authData.userInfo.username) {
+          console.log(147);
+          return res.status(403).json({mess:'147'})
+        }
+        passport.authenticate('local', {session: false}, (err, user, info) => {
+          if (err) {
+            console.log(err, '149');
+            return res.status(402).json({message: 149})
+          } else if (!user) {
+            return res.status(401).json({
+              login: false,
+              message: 'Something is not right',
+              user : user.username
+            });
+          } else {
+            encryptPassword(req.body.newPassword, (encryptedPW) => {
+              User.findByIdAndUpdate(authData.userInfo.id, { password: encryptedPW}, (err) => {  
+                if (err) {
+                  res.status(403).json({mess: 173});
+                } else {
+                  res.status(200).json({mess: "password updated"})
+                }
+              })
+          })}
+        })(req, res);
+      }
+    })
+  })
 
   module.exports = router;

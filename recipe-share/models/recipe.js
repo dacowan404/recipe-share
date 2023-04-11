@@ -9,7 +9,10 @@ const RecipeSchema = new Schema({
   steps: [{ type: String, required: true}],
   description: { type: String, maxLength: 160},
   notes: { type: String},
-  creator: { type: Schema.Types.ObjectId, ref: "User", required: true},
+  creator: { 
+    id: { type: Schema.Types.ObjectId, ref: "User", required: true},
+    name: { type: String, required: true}
+  },
   editedDate: { type: Date, required: true, default: Date.now },
   likes: { type: Number, required: true, default: 0},
 })

@@ -3,7 +3,7 @@ import axios from "axios";
 import { UserContext } from "../App";
 
 function UpdatePassword() {
-  const { BACKEND_ADDRESS } = useContext(UserContext)
+  const { BACKEND_ADDRESS, userName } = useContext(UserContext)
   const [ currentPassword, setCurrentPassword ] = useState('');
   const [ newPassword, setNewPassword ] = useState('');
   const [ confirmNewPassword, setConfirmNewPassword ] = useState('');
@@ -29,13 +29,14 @@ function UpdatePassword() {
     }
 
     const data = {
-      currentPassword,
+      username: userName,
+      password: currentPassword,
       newPassword
     }
-
-    axios.post(BACKEND_ADDRESS +'/users/update', data)
+    axios.put(BACKEND_ADDRESS +'/users/update', data, {headers: {'Authorization': `Bearer ${window.localStorage.getItem('token')}`}})
       .then(() => {
-        window.location.href = '/';
+        console.log('i gues it werked')
+        //window.location.href = '/';
       });
   }
 
@@ -61,7 +62,7 @@ function UpdatePassword() {
             </div>
 
             <div className="submit">
-              <input type="submit" value="Create User" />
+              <input type="submit" value="Update Password" />
             </div>
           </fieldset>
         </form>

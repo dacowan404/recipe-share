@@ -4,6 +4,8 @@ const router = express.Router();
 
 const Recipe = require('../models/recipe');
 
+const secretKey = process.env.SECRET_KEY;
+
 function verifyToken(req, res, next) {
   //get auth header value
   const bearerHeader = req.headers['authorization'];
@@ -30,12 +32,12 @@ router.route('/explore/').get((req, res) => {
 
 // recipe routes
 router.get('/myrecipes', verifyToken, (req, res) => {
-  jwt.verify(req.token, 'secretKey', (err,  authData) => {
+  jwt.verify(req.token, secretKey, (err,  authData) => {
     if (err) {
       console.log(err)
       res.status(403).json({message: '44'})
     } else {
-      Recipe.find({creator: authData.userInfo.id})
+      Recipe.find({"creator.id": authData.userInfo.id})
       .sort({likes:-1})
       .then(recipes => res.status(200).json(recipes))
       .catch(err => res.status(400).json('Error 49' + err))
@@ -44,7 +46,7 @@ router.get('/myrecipes', verifyToken, (req, res) => {
 })
 
 router.post('/createRecipe', verifyToken, (req, res) => {
-  jwt.verify(req.token, 'secretKey', (err, authData) => {
+  jwt.verify(req.token, secretKey, (err, authData) => {
     if (err) {
       console.log(err)
       res.status(403).json({message: '44'})
@@ -55,7 +57,10 @@ router.post('/createRecipe', verifyToken, (req, res) => {
       steps: req.body.steps,
       description: req.body.description,
       notes: req.body.notes,
-      creator: authData.userInfo.id,
+      creator: {
+        id: authData.userInfo.id, 
+        name: authData.userInfo.username
+      },
       editedDate: req.body.editedDate
     })
 
@@ -79,11 +84,11 @@ router.delete('/recipe/:id', verifyToken, (req, res, next) => {
       if (results == null) {
         res.status(204).json('No results found');
       }
-      jwt.verify(req.token, 'secretKey', (err, authData) => {
+      jwt.verify(req.token, secretKey, (err, authData) => {
         if (err) {
           console.log(err);
           res.status(403).json({message: 106})
-        } else if (results.creator == authData.userInfo.id){
+        } else if (results.creator.id == authData.userInfo.id){
           Recipe.findByIdAndRemove(req.params.id, (err) => {        
             if (err) {          
               return next(err);        
@@ -110,11 +115,11 @@ router.put('/recipe/:id', verifyToken, (req, res, next) => {
     if (results == null) {
       res.status(204).json('No results found');
     }
-    jwt.verify(req.token, 'secretKey', (err, authData) => {
+    jwt.verify(req.token, secretKey, (err, authData) => {
       if (err) {
         console.log(err);
         res.status(403).json({message: 137})
-      } else if (results.creator == authData.userInfo.id) {
+      } else if (results.creator.id == authData.userInfo.id) {
         Recipe.findByIdAndUpdate(req.params.id, {
           name: req.body.name,
           ingredients: req.body.ingredients,

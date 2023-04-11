@@ -16,8 +16,6 @@ import Login from "./components/login.component";
 import Logout from "./components/logout.component";
 import UpdatePassword from "./components/update-password.component"
 
-//import { UserContext } from "./userContext";
-
 export const UserContext = React.createContext({
   BACKEND_ADDRESS: 'http://localhost:5000',
   userName: null,

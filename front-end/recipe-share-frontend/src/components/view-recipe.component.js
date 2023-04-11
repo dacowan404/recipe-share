@@ -31,7 +31,7 @@ import { UserContext } from '../App';
   return (
     <div className='recipeList'>
       <div id='exploreTitle'> {name}</div>
-      <div className='creator'> Made by {creator} </div>
+      <div className='creator'> Made by {creator.name} </div>
       <p className='description'>{description}</p>
       <div className='ingreTitle'>Ingredients:</div>
       <ul className='ingredients'>
@@ -53,13 +53,13 @@ import { UserContext } from '../App';
       </ol>
       <div className='notesTitle'>Additional Notes</div>
       <div className='notes'>{notes}</div>
-      {userID === creator ? 
+      {userID === creator.id ? 
       <div>
         <br />
         <Link to={`/edit/${id}`} className='editRecipe'>Edit Recipe</Link>
         <Link to={`/delete/${id}`} className='deleteRecipe'>Delete Recipe</Link>
       </div> : 
-      <div><br />not user</div>}
+      <div></div>}
 
     </div>
   )

@@ -10,7 +10,7 @@ function Home()  {
     welcome = (
       <>
       <div className='welcome'> Welcome back, {userName}!</div>
-      <Link to='/updatePassword' className='center'>Update Password</Link>
+      <Link to='/updatePassword' className='center'><div className='update'>Update Password</div></Link>
       </>
     )
   } else {

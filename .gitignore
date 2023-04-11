@@ -3,3 +3,4 @@ recipe-share/insertData.js
 node_modules/
 .env
 reactForm.js
+test.js

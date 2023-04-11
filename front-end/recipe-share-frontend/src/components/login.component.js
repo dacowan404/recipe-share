@@ -31,7 +31,14 @@ function Login() {
         localStorage.setItem('token', res.data.token);
       })
       .then(() => {
-        window.location.href = '/';
+          window.location.href = '/';
+      })
+      .catch((res) => {
+        if (res.response.status === 401) {
+          alert("Incorrect Username/Password");
+        } else {
+          alert("Unable to login try again later");
+        }
       }); 
     }
 
